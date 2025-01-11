@@ -22,9 +22,25 @@ app.post('/api/signup', (req, res) => {
 
 // Get scholarship data
 app.get('/api/scholarships', (req, res) => {
-    const query = 'SELECT * FROM Scholarships';
+    const { gender, excludedIds } = req.query;
 
-    db.query(query, (err, results) => {
+    let query = 'SELECT * FROM Scholarships WHERE 1=1'; // Base query without filters
+    const params = [];
+
+    // Apply gender-based scholarship filter if provided
+    if (gender) {
+        query += ' AND (gender = ? OR gender IS NULL)';
+        params.push(gender);
+    }
+
+    // Remove scholarships that have been marked as liked or not interested from view
+    if (excludedIds) {
+        const ids = excludedIds.split(',').map((id) => parseInt(id, 10));
+        query += ` AND id NOT IN (${ids.map(() => '?').join(',')})`;
+        params.push(...ids);
+    }
+
+    db.query(query, params, (err, results) => {
         if (err) {
           console.error(err);
           res.status(500).json({ error: "Failed to fetch scholarships" });
