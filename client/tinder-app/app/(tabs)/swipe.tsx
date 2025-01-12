@@ -6,8 +6,40 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { useEffect, useState } from "react";
+import axios, { AxiosError } from "axios";
 
+// Function to fetch data from server
 export default function TabTwoScreen() {
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+
+  const getScholarships = async () => {
+    try {
+      console.log("hihi");
+      const response = await axios.get("http://172.30.105.190:3000/api/scholarships")
+      const _data = response.data
+      console.log(response)
+      setData(_data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log("hiii")
+    getScholarships();
+  }, [])
+
+  useEffect(() => {
+    console.log(data)
+  }, [data]);
+
+
+  // Everything below is the styling
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
@@ -23,6 +55,10 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Explore</ThemedText>
       </ThemedView>
+      <ThemedText>
+        {/* This JSON.stringify(data) is what's displaying the data right now, its ok to delete when formatting */}
+      {JSON.stringify(data)} 
+      </ThemedText>
       <ThemedText>
         This app includes example code to help you get started.
       </ThemedText>

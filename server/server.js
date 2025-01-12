@@ -1,9 +1,11 @@
 const express = require('express');
+const cors = require('cors');
 const db = require('./db');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors())
 app.use(express.json()); // Middleware to parse JSON request body
 
 let time = 0; // Define start time for console messages
@@ -66,7 +68,7 @@ app.get('/api/scholarships/:id', (req, res) => {
 });
 
 // Get list of saved scholarships
-app.get('/api/saved-scholarships', (req, res) => {
+app.get('/api/saved-scholarship', (req, res) => {
     const query = `SELECT s.* FROM SavedLists sl JOIN Scholarships s ON sl.scholarship_id = s.id`;
 
     db.query(query, (err, results) => {
