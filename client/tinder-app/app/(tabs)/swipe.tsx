@@ -34,23 +34,45 @@ export default function TabTwoScreen() {
   const [data, setData] = useState<Scholarship[]>([]);
   const [isFlipped, setIsFlipped] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0); // Track current scholarship displayed on card
+  const [savedScholarships, setSavedScholarships] = useState<Scholarship[]>([]);
   console.log("flipping status:", isFlipped);
+
+  const getSavedScholarships = async () => {
+    try {
+      const response = await axios.get<Scholarship[]>(
+        "http://172.30.105.190:3000/api/saved-scholarships"
+      );
+      setSavedScholarships(response.data);
+    } catch (error) {
+      console.error("Error fetching saved scholarships:", error);
+    }
+  };
 
   const getScholarships = async () => {
     try {
-      console.log("hihi");
       const response = await axios.get<Scholarship[]>(
         "http://172.30.105.190:3000/api/scholarships"
       );
-      const _data = response.data;
+      const fetchedData = response.data;
+      const filteredData = fetchedData.filter((scholarship) => !savedScholarships.some((saved) => saved.id === scholarship.id));
       console.log(response);
-      setData(_data);
+      setData(filteredData);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    getSavedScholarships();
+  }, []);
+
+  useEffect(() => {
+    if (savedScholarships.length > 0) {
+      getScholarships();
+    }
+  }, [savedScholarships]);
 
   useEffect(() => {
     console.log("hiii");
@@ -155,7 +177,7 @@ export default function TabTwoScreen() {
             style={[styles.image, { alignSelf: "center" }]} // Adjust the size here
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleNext}>
+        <TouchableOpacity onPress={handleSave}>
           <Image
             source={require("@/assets/images/heart.png")}
             style={[styles.image, { alignSelf: "center" }]} // Adjust the size here

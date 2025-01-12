@@ -68,7 +68,7 @@ app.get('/api/scholarships/:id', (req, res) => {
 });
 
 // Get list of saved scholarships
-app.get('/api/saved-scholarship', (req, res) => {
+app.get('/api/saved-scholarships', (req, res) => {
     const query = `SELECT s.* FROM SavedLists sl JOIN Scholarships s ON sl.scholarship_id = s.id`;
 
     db.query(query, (err, results) => {
