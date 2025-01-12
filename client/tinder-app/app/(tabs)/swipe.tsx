@@ -133,11 +133,9 @@ export default function TabTwoScreen() {
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
       headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
+        <Image
+          source={require("@/assets/images/sky.jpg")}
+          style={[styles.headerImage, { alignSelf: "center" }]} // Adjust the size here
         />
       }
     >
@@ -158,21 +156,21 @@ export default function TabTwoScreen() {
 
           <Text style={styles.text}>
             {isFlipped
-              ?    <View style={styles.back}>
-              <Text style={styles.text}>Opens: {currentScholarship.open_date}</Text>
-              <Text style={styles.text}>Due: {currentScholarship.due_date}</Text>
-              <Text style={styles.text}>{currentScholarship.description}</Text>
-              <Text style={styles.text}>{currentScholarship.url}</Text>
-            </View>
+              ? <View style={styles.back}>
+                <Text style={styles.text}>Opens: {currentScholarship.open_date}</Text>
+                <Text style={styles.text}>Due: {currentScholarship.due_date}</Text>
+                <Text style={styles.text}>{currentScholarship.description}</Text>
+                <Text style={styles.text}>{currentScholarship.url}</Text>
+              </View>
               : <View style={styles.front}>
-              <Text style={styles.text}>${currentScholarship.value}</Text>
-              <Text style={styles.text}>{currentScholarship.name}</Text>
-              <Text style={styles.text}>{currentScholarship.company}</Text>
-            </View>}
+                <Text style={[styles.text, { fontWeight: 'bold', fontSize: 60 }]}>${currentScholarship.value}</Text>
+                <Text style={styles.text}>{currentScholarship.name}</Text>
+                <Text style={styles.text}>{currentScholarship.company}</Text>
+              </View>}
           </Text>
 
           {/* Scholarship info displayed on back of card */}
-       
+
 
         </TouchableOpacity>
       </View>
@@ -217,6 +215,7 @@ const styles = StyleSheet.create({
     bottom: -90,
     left: -35,
     position: "absolute",
+    width: 500
   },
   titleContainer: {
     flexDirection: "row",
