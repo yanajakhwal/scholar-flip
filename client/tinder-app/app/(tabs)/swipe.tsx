@@ -17,17 +17,29 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import React, { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 
+type Scholarship = {
+  id: number;
+  name: string;
+  company: string;
+  value: number;
+  open_date: string;
+  due_date: string;
+  description: string;
+  url: string;
+};
+
 // Function to fetch data from server
 export default function TabTwoScreen() {
   const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Scholarship[]>([]);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0); // Track current scholarship displayed on card
   console.log("flipping status:", isFlipped);
 
   const getScholarships = async () => {
     try {
       console.log("hihi");
-      const response = await axios.get(
+      const response = await axios.get<Scholarship[]>(
         "http://172.30.105.190:3000/api/scholarships"
       );
       const _data = response.data;
@@ -45,9 +57,45 @@ export default function TabTwoScreen() {
     getScholarships();
   }, []);
 
+  const handleNext = () => {
+    if (currentIndex < data.length - 1) {
+      setCurrentIndex(currentIndex + 1); // Show next scholarship
+    } else {
+      setCurrentIndex(0); // Reset to the first scholarship when reaching the end
+    }
+    setIsFlipped(false); // Reset to front card view
+  };
+
   useEffect(() => {
     console.log(data);
   }, [data]);
+
+  const handleSave = async () => {
+    const currentScholarship = data[currentIndex];
+
+    try {
+      await axios.post("http://172.30.105.190:3000/api/saved-scholarships", {
+        scholarship_id: currentScholarship.id
+      });
+
+      const updatedData = data.filter((item, index) => index !== currentIndex);
+      setData(updatedData);
+
+      handleNext();
+    } catch (error) {
+      console.error("Error saving scholarship:", error);
+    }
+  };
+
+  const currentScholarship = data[currentIndex] || null;
+
+  if (!currentScholarship) {
+    return (
+      <View style={styles.container}>
+        <Text>No scholarships available</Text>
+      </View>
+    );
+  }
 
   // Everything below is the styling
 
@@ -65,28 +113,49 @@ export default function TabTwoScreen() {
       }
     >
       <ThemedText>
-        {/* This JSON.stringify(data) is what's displaying the data right now, its ok to delete when formatting */}
-        {JSON.stringify(data)}
+        {/* {JSON.stringify(data)} */}
       </ThemedText>
+
       <View>
         <TouchableOpacity
-          style={styles.card}
           onPress={() => setIsFlipped(!isFlipped)}
+          style={[
+            styles.card,
+            isFlipped ? styles.back : styles.front, // Dynamically apply styles
+          ]}
         >
           {/* make the following variables */}
-          <Text style={styles.text}>Value</Text>
-          <Text style={styles.text}>Company</Text>
-          <Text style={styles.text}>Description</Text>
+          {/* Scholarship info displayed on front of card */}
+
+          <Text style={styles.text}>
+            {isFlipped
+              ?    <View style={styles.back}>
+              <Text style={styles.text}>Opens: {currentScholarship.open_date}</Text>
+              <Text style={styles.text}>Due: {currentScholarship.due_date}</Text>
+              <Text style={styles.text}>{currentScholarship.description}</Text>
+              <Text style={styles.text}>{currentScholarship.url}</Text>
+            </View>
+              : <View style={styles.front}>
+              <Text style={styles.text}>${currentScholarship.value}</Text>
+              <Text style={styles.text}>{currentScholarship.name}</Text>
+              <Text style={styles.text}>{currentScholarship.company}</Text>
+            </View>}
+          </Text>
+
+          {/* Scholarship info displayed on back of card */}
+       
+
         </TouchableOpacity>
       </View>
+
       <View style={styles.container}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleNext}>
           <Image
             source={require("@/assets/images/ex2-removebg-preview.png")}
             style={[styles.image, { alignSelf: "center" }]} // Adjust the size here
           />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleNext}>
           <Image
             source={require("@/assets/images/heart.png")}
             style={[styles.image, { alignSelf: "center" }]} // Adjust the size here
@@ -135,7 +204,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   card: {
-    width: 250,
+    width: 325,
     height: 350,
     backgroundColor: "#ffffff",
     borderRadius: 10,
@@ -153,4 +222,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#333333",
   },
+  front: {
+    backgroundColor: "#ffffff",
+  },
+  back: {
+    backgroundColor: "#C2E7B1",
+  }
 });
