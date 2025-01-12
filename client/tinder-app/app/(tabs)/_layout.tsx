@@ -32,7 +32,7 @@ export default function TabLayout() {
         options={{
           title: "My Profile",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <IconSymbol size={28} name="person.fill" color={color} />
           ),
         }}
       />
@@ -41,12 +41,12 @@ export default function TabLayout() {
         options={{
           title: "Swipe",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <IconSymbol size={28} name="circle.fill" color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="saved"
         options={{
           title: "Saved Apps",
           tabBarIcon: ({ color }) => (
