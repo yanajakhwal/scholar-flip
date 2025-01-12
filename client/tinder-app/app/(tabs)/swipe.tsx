@@ -98,15 +98,22 @@ export default function TabTwoScreen() {
   const handleSave = async () => {
     const currentScholarship = data[currentIndex];
 
+    if (!currentScholarship) return;
+
     try {
       await axios.post("http://172.30.105.190:3000/api/saved-scholarships", {
         scholarship_id: currentScholarship.id,
       });
 
+      // Remove saved/liked scholarship from stack
       const updatedData = data.filter((item, index) => index !== currentIndex);
       setData(updatedData);
 
-      handleNext();
+      if (currentIndex >= updatedData.length) {
+        setCurrentIndex(0);
+      } else {
+        handleNext();
+      }
     } catch (error) {
       console.error("Error saving scholarship:", error);
     }

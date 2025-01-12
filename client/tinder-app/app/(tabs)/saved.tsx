@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import axios, { AxiosError } from "axios";
+import { useFocusEffect } from "@react-navigation/native"; // Import the hook
 
 type Scholarship = {
   id: number;
@@ -37,6 +38,13 @@ const SavedScreen = () => {
       console.error("Error fetching saved scholarships:", error);
     }
   };
+
+  // Fetch updated saved scholarships
+  useFocusEffect(
+    React.useCallback(() => {
+      getSavedScholarships();
+    }, [])
+  );
 
   useEffect(() => {
     getSavedScholarships();
