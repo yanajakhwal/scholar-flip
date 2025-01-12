@@ -1,4 +1,3 @@
-import React from "react";
 import {
   View,
   Text,
@@ -9,39 +8,43 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
+import React, { useEffect, useState } from "react";
+import axios, { AxiosError } from "axios";
 
-const data = [
-  {
-    id: "1",
-    image: "https://via.placeholder.com/100", // Replace with actual image URLs
-    name: "Scholarship 1",
-    link: "https://example.com/scholarship1",
-  },
-  {
-    id: "2",
-    image: "https://via.placeholder.com/100",
-    name: "Scholarship 2",
-    link: "https://example.com/scholarship2",
-  },
-  {
-    id: "3",
-    image: "https://via.placeholder.com/100",
-    name: "Scholarship 3",
-    link: "https://example.com/scholarship3",
-  },
-  {
-    id: "4",
-    image: "https://via.placeholder.com/100",
-    name: "Scholarship 4",
-    link: "https://example.com/scholarship4",
-  },
-];
+type Scholarship = {
+  id: number;
+  name: string;
+  company: string;
+  value: number;
+  open_date: string;
+  due_date: string;
+  description: string;
+  url: string;
+};
 
 const SavedScreen = () => {
-  const renderItem = ({ item }: { item: typeof data[0] }) => (
+  const [savedScholarships, setSavedScholarships] = useState<Scholarship[]>([]);
+  
+  // Fetch saved scholarships from backend
+  const getSavedScholarships = async () => {
+    try {
+      const response = await axios.get<Scholarship[]>(
+        "http://172.30.105.190:3000/api/saved-scholarships"
+      );
+      setSavedScholarships(response.data);
+    } catch (error) {
+      console.error("Error fetching saved scholarships:", error);
+    }
+  };
+
+  useEffect(() => {
+      getSavedScholarships();
+    }, []);
+
+  const renderItem = ({ item }: { item: Scholarship }) => (
     <View style={styles.card}>
-      {/* Image */}
-      <Image source={{ uri: item.image }} style={styles.image} />
+      {/* Image
+      <Image source={{ uri: item.image }} style={styles.image} /> */}
 
       {/* Scholarship Info */}
       <View style={styles.infoContainer}>
@@ -49,7 +52,7 @@ const SavedScreen = () => {
         <Text style={styles.cardText}>{item.name}</Text>
 
         {/* Scholarship Link */}
-        <TouchableOpacity onPress={() => Linking.openURL(item.link)}>
+        <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
           <Text style={styles.cardLink}>View Scholarship</Text>
         </TouchableOpacity>
       </View>
@@ -63,9 +66,9 @@ const SavedScreen = () => {
 
       {/* List */}
       <FlatList
-        data={data}
+        data={savedScholarships}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
       />
@@ -89,7 +92,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#000",
     marginBottom: 16,
-    marginTop: "10%",
+    marginTop: "13%",
   },
   list: {
     paddingBottom: 16,
