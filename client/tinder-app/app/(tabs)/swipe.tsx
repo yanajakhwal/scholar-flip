@@ -54,10 +54,7 @@ export default function TabTwoScreen() {
         "http://172.30.105.190:3000/api/scholarships"
       );
       const fetchedData = response.data;
-      const filteredData = fetchedData.filter(
-        (scholarship) =>
-          !savedScholarships.some((saved) => saved.id === scholarship.id)
-      );
+      const filteredData = fetchedData.filter((scholarship) => !savedScholarships.some((saved) => saved.id === scholarship.id));
       console.log(response);
       setData(filteredData);
     } catch (error) {
@@ -102,7 +99,7 @@ export default function TabTwoScreen() {
 
     try {
       await axios.post("http://172.30.105.190:3000/api/saved-scholarships", {
-        scholarship_id: currentScholarship.id,
+        scholarship_id: currentScholarship.id
       });
 
       // Remove saved/liked scholarship from stack
@@ -136,13 +133,17 @@ export default function TabTwoScreen() {
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
       headerImage={
-        <Image
-          source={require("@/assets/images/sky.jpg")}
-          style={[styles.headerImage, { alignSelf: "center" }]} // Adjust the size here
+        <IconSymbol
+          size={310}
+          color="#808080"
+          name="chevron.left.forwardslash.chevron.right"
+          style={styles.headerImage}
         />
       }
     >
-      <ThemedText>{/* {JSON.stringify(data)} */}</ThemedText>
+      <ThemedText>
+        {/* {JSON.stringify(data)} */}
+      </ThemedText>
 
       <View>
         <TouchableOpacity
@@ -156,29 +157,23 @@ export default function TabTwoScreen() {
           {/* Scholarship info displayed on front of card */}
 
           <Text style={styles.text}>
-            {isFlipped ? (
-              <View style={styles.back}>
-                <Text style={styles.text}>
-                  Opens: {currentScholarship.open_date}
-                </Text>
-                <Text style={styles.text}>
-                  Due: {currentScholarship.due_date}
-                </Text>
-                <Text style={styles.text}>
-                  {currentScholarship.description}
-                </Text>
-                <Text style={styles.text}>{currentScholarship.url}</Text>
-              </View>
-            ) : (
-              <View style={styles.front}>
-                <Text style={styles.text}>${currentScholarship.value}</Text>
-                <Text style={styles.text}>{currentScholarship.name}</Text>
-                <Text style={styles.text}>{currentScholarship.company}</Text>
-              </View>
-            )}
+            {isFlipped
+              ?    <View style={styles.back}>
+              <Text style={styles.text}>Opens: {currentScholarship.open_date}</Text>
+              <Text style={styles.text}>Due: {currentScholarship.due_date}</Text>
+              <Text style={styles.text}>{currentScholarship.description}</Text>
+              <Text style={styles.text}>{currentScholarship.url}</Text>
+            </View>
+              : <View style={styles.front}>
+              <Text style={styles.text}>${currentScholarship.value}</Text>
+              <Text style={styles.text}>{currentScholarship.name}</Text>
+              <Text style={styles.text}>{currentScholarship.company}</Text>
+            </View>}
           </Text>
 
           {/* Scholarship info displayed on back of card */}
+       
+
         </TouchableOpacity>
       </View>
 
@@ -261,5 +256,5 @@ const styles = StyleSheet.create({
   },
   back: {
     backgroundColor: "#C2E7B1",
-  },
+  }
 });
