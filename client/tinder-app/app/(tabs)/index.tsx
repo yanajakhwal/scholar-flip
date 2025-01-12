@@ -5,6 +5,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 export default function HomeScreen() {
   const [fName, setfName] = useState("");
@@ -17,8 +18,13 @@ export default function HomeScreen() {
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={<Image style={styles.reactLogo} />}
+      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
+      headerImage={
+        <Image
+          source={require("@/assets/images/sky.jpg")}
+          style={[styles.headerImage, { alignSelf: "center" }]} // Adjust the size here
+        />
+      }
     >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">My Profile</ThemedText>
@@ -91,6 +97,11 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  headerImage: {
+    color: "#808080",
+    position: "absolute",
+    width: 400,
+  },
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",

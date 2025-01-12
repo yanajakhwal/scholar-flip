@@ -9,6 +9,7 @@ import {
   Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
 import axios, { AxiosError } from "axios";
 
 type Scholarship = {
@@ -24,7 +25,7 @@ type Scholarship = {
 
 const SavedScreen = () => {
   const [savedScholarships, setSavedScholarships] = useState<Scholarship[]>([]);
-  
+
   // Fetch saved scholarships from backend
   const getSavedScholarships = async () => {
     try {
@@ -38,8 +39,8 @@ const SavedScreen = () => {
   };
 
   useEffect(() => {
-      getSavedScholarships();
-    }, []);
+    getSavedScholarships();
+  }, []);
 
   const renderItem = ({ item }: { item: Scholarship }) => (
     <View style={styles.card}>
@@ -60,27 +61,41 @@ const SavedScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      {/* Title */}
-      <Text style={styles.title}>Saved</Text>
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
+      headerImage={
+        <Image
+          source={require("@/assets/images/sky.jpg")}
+          style={[styles.headerImage, { alignSelf: "center" }]} // Adjust the size here
+        />
+      }
+    >
+      <View style={styles.container}>
+        {/* Title */}
+        <Text style={styles.title}>Saved</Text>
 
-      {/* List */}
-      <FlatList
-        data={savedScholarships}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.list}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
+        {/* List */}
+        <FlatList
+          data={savedScholarships}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    </ParallaxScrollView>
   );
 };
 
+const { width } = Dimensions.get("window");
 export default SavedScreen;
 
-const { width } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
+  headerImage: {
+    color: "#808080",
+    position: "absolute",
+    width: 400,
+  },
   container: {
     flex: 1,
     backgroundColor: "#F8F4F1",
