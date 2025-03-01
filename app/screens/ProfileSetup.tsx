@@ -6,6 +6,7 @@ const ProfileSetup = () => {
   const navigation = useNavigation();
 
   return (
+    
     <View style={styles.container}>
       <Text style={styles.title}>Set Up Your Profile</Text>
       <TouchableOpacity style={styles.button} onPress={() => console.log('Proceeding to setup')}>

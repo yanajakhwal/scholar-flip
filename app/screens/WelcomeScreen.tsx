@@ -1,29 +1,61 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation/navigationTypes';  // Import the types
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../navigation/RootNavigator'; 
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
 
 const WelcomeScreen = () => {
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation<NavigationProp>(); 
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Scholar Flip!</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ProfileSetup')}>
-        <Text style={styles.buttonText}>Get Started</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity 
+      style={styles.fullScreenTouch} 
+      onPress={() => navigation.navigate('ProfileSetup')} 
+      activeOpacity={1} 
+    >
+      <LinearGradient
+        colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} 
+        style={styles.background}
+      >
+        <View style={styles.container}>
+          <Text style={styles.title}>ScholarFlip</Text>
+          {/* <Text style={styles.subtitle}>(Tap anywhere to continue)</Text> */}
+        </View>
+      </LinearGradient>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-  button: { backgroundColor: '#007AFF', padding: 15, borderRadius: 10 },
-  buttonText: { color: '#fff', fontWeight: 'bold' },
+  fullScreenTouch: {
+    flex: 1,
+  },
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#000',
+    fontFamily: 'AfacadRegular',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#000',
+    fontFamily: 'AfacadBold',
+    opacity: 0.8,
+  },
 });
 
 export default WelcomeScreen;
