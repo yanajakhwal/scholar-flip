@@ -16,18 +16,15 @@ const WelcomeScreen = () => {
       onPress={() => navigation.navigate('ProfileSetup')} 
       activeOpacity={1} 
     >
-      <LinearGradient
-        colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} 
-        style={styles.background}
-      >
+      <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
         <View style={styles.container}>
           <Text style={styles.title}>ScholarFlip</Text>
-          {/* <Text style={styles.subtitle}>(Tap anywhere to continue)</Text> */}
         </View>
       </LinearGradient>
     </TouchableOpacity>
   );
 };
+
 
 const styles = StyleSheet.create({
   fullScreenTouch: {
