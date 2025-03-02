@@ -7,13 +7,13 @@ import { RootStackParamList } from '../navigation/RootNavigator';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
 
-const WelcomeScreen = () => {
+const Welcome = () => {
   const navigation = useNavigation<NavigationProp>(); 
 
   return (
     <TouchableOpacity 
       style={styles.fullScreenTouch} 
-      onPress={() => navigation.navigate('ProfileSetup')} 
+      onPress={() => navigation.navigate('Login_Signup')} 
       activeOpacity={1} 
     >
       <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
@@ -55,4 +55,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WelcomeScreen;
+export default Welcome;

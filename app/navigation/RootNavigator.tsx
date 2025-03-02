@@ -2,14 +2,16 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import WelcomeScreen from '../screens/WelcomeScreen';
-import ProfileSetup from '../screens/ProfileSetup';
+import LoginSignupScreen from '../screens/LoginSignupScreen';
+import HomeScreen from '../screens/HomeScreen';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 export type RootStackParamList = {
-    Welcome: undefined;
-    ProfileSetup: undefined;
-  };
+  Welcome: undefined;
+  Login_Signup: undefined;
+  Home: undefined;
+};
 
 export default function RootNavigator() {
   return (
@@ -17,11 +19,12 @@ export default function RootNavigator() {
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
-          cardStyle: { backgroundColor: '#FAF9F6' }, // ✅ Change global background color
+          cardStyle: { backgroundColor: '#FAF9F6' }, 
         }}
       >
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="ProfileSetup" component={ProfileSetup} />
+        <Stack.Screen name="Login_Signup" component={LoginSignupScreen} /> 
+        <Stack.Screen name="Home" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
