@@ -3,14 +3,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginSignupScreen from '../screens/LoginSignupScreen';
-import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 export type RootStackParamList = {
   Welcome: undefined;
   Login_Signup: undefined;
-  Home: undefined;
+  Profile: undefined;
 };
 
 export default function RootNavigator() {
@@ -24,7 +24,7 @@ export default function RootNavigator() {
       >
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Login_Signup" component={LoginSignupScreen} /> 
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

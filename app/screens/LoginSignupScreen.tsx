@@ -5,7 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/RootNavigator'; 
 import { LinearGradient } from 'expo-linear-gradient';
 
-type NavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
+type NavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;
 
 const LoginSignupScreen = () => {
   const navigation = useNavigation<NavigationProp>(); 
@@ -16,7 +16,7 @@ const LoginSignupScreen = () => {
 
   const handleAuth = () => {
     if (email === "test123@gmail.com" && password === "123password456") {
-      navigation.navigate("Home");
+      navigation.navigate("Profile");
     } else {
       Alert.alert("Invalid Credentials", "Please check your email or password.");
     }
