@@ -23,7 +23,8 @@
     "react-native-reanimated": "^3.16.1",
     "expo-font": "~13.0.4",
     "react-native-webview": "13.12.5",
-    "expo-image-picker": "~16.0.6"
+    "expo-image-picker": "~16.0.6",
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
