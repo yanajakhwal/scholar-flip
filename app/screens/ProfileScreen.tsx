@@ -14,8 +14,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
-const Profile = () => {
-  const [name, setName] = useState('');
+const ProfileScreen = () => {
+  const [user, setUser] = useState('');
   const [phone, setPhone] = useState('');
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
@@ -40,24 +40,24 @@ const Profile = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
         <ScrollView contentContainerStyle={styles.container}>
+        
+        {/* Profile Picture */}
+        <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+          {profileImage ? (
+            <Image source={{ uri: profileImage }} style={styles.profileImage} />
+          ) : (
+            <Image source={require('../assets/profile-img.png')} style={styles.profileImage} />
+          )}
+        </TouchableOpacity>
 
-          {/* Profile Image */}
-          <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
-            {profileImage ? (
-              <Image source={{ uri: profileImage }} style={styles.profileImage} />
-            ) : (
-              <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.profileImage} />
-            )}
-          </TouchableOpacity>
-
-          {/* Editable Fields */}
-          <View style={styles.detailsContainer}>
-            <Text style={styles.label}>Name</Text>
+         {/* Fields */}
+         <View style={styles.detailsContainer}>
+            <Text style={styles.label}>Username</Text>
             <TextInput 
               style={styles.input} 
-              placeholder="Enter your name"
-              value={name}
-              onChangeText={setName}
+              placeholder="username"
+              value={user}
+              onChangeText={setUser}
             />
 
             <Text style={styles.label}>Email</Text>
@@ -66,7 +66,7 @@ const Profile = () => {
             <Text style={styles.label}>Phone</Text>
             <TextInput 
               style={styles.input} 
-              placeholder="Enter your phone"
+              placeholder="+1 123-456-7890"
               keyboardType="phone-pad"
               value={phone}
               onChangeText={setPhone}
@@ -75,15 +75,15 @@ const Profile = () => {
             <Text style={styles.label}>Gender</Text>
             <TextInput 
               style={styles.input} 
-              placeholder="Enter your gender"
+              placeholder="gender"
               value={gender}
               onChangeText={setGender}
             />
 
-            <Text style={styles.label}>Date of Birth</Text>
+            <Text style={styles.label}>Date of birth</Text>
             <TextInput 
               style={styles.input} 
-              placeholder="DD/MM/YYYY"
+              placeholder="24/12/2005"
               keyboardType="numeric"
               value={dob}
               onChangeText={setDob}
@@ -94,46 +94,9 @@ const Profile = () => {
           <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonText}>SAVE INFORMATION</Text>
           </TouchableOpacity>
-
-          {/* Profile Completion Sections */}
-          <View style={styles.sectionContainer}>
-            <Text style={styles.progressText}>2/4 Completed</Text>
-            <Text style={styles.instruction}>You must complete your profile before submitting applications.</Text>
-
-            <View style={styles.section}>
-              <Ionicons name="person-circle-outline" size={24} color="#4A90E2" />
-              <View style={styles.sectionText}>
-                <Text style={styles.sectionTitle}>Personal Details</Text>
-                <Text style={styles.sectionDescription}>Full name, email, phone number, and your address</Text>
-              </View>
-            </View>
-
-            <View style={styles.section}>
-              <Ionicons name="school-outline" size={24} color="#4A90E2" />
-              <View style={styles.sectionText}>
-                <Text style={styles.sectionTitle}>Education</Text>
-                <Text style={styles.sectionDescription}>Enter your educational history to be considered by the recruiter</Text>
-              </View>
-            </View>
-
-            <View style={styles.section}>
-              <Ionicons name="briefcase-outline" size={24} color="#4A90E2" />
-              <View style={styles.sectionText}>
-                <Text style={styles.sectionTitle}>Experience</Text>
-                <Text style={styles.sectionDescription}>Enter your work experience to be considered by the recruiter</Text>
-              </View>
-            </View>
-
-            <View style={styles.section}>
-              <Ionicons name="document-text-outline" size={24} color="#4A90E2" />
-              <View style={styles.sectionText}>
-                <Text style={styles.sectionTitle}>Application Profile</Text>
-                <Text style={styles.sectionDescription}>Create your application profile. Applying for jobs is easier.</Text>
-              </View>
-            </View>
-          </View>
-
         </ScrollView>
+
+  
       </LinearGradient>
     </TouchableWithoutFeedback>
   );
@@ -142,19 +105,30 @@ const Profile = () => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
   container: {
     flexGrow: 1,
+    justifyContent: 'center', // Centers content vertically
+    alignItems: 'center', // Centers content horizontally
+    width: '100%', 
     padding: 20,
   },
+  profileHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    marginBottom: 20,
+  },
   imageContainer: {
-    alignSelf: 'center',
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#ddd',
-    justifyContent: 'center',
-    alignItems: 'center',
+    overflow: 'hidden',
     marginBottom: 20,
   },
   profileImage: {
@@ -165,81 +139,63 @@ const styles = StyleSheet.create({
   detailsContainer: {
     backgroundColor: 'white',
     padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
+    borderRadius: 12,
+    width: '95%', // Increased width for a larger box
+    maxWidth: 500, // Increase max width for larger screens
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 10,
     elevation: 3,
   },
   label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 10,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#999',
+    marginTop: 12,
+    textTransform: 'uppercase',
   },
   value: {
     fontSize: 16,
+    fontWeight: 'bold',
     color: '#333',
     marginBottom: 10,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    paddingVertical: 8,
+    fontSize: 16,
     marginBottom: 10,
-    backgroundColor: '#f9f9f9',
+    color: '#333',
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#333',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
-    width: '100%',
-    marginBottom: 20,
+    width: '90%',
+    maxWidth: 400,
+    marginBottom: 30,
+    marginTop: 10,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  sectionContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  progressText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#4A90E2',
-    textAlign: 'center',
-  },
-  instruction: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginVertical: 10,
-    color: '#666',
-  },
-  section: {
+  navbar: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    marginVertical: 10,
-  },
-  sectionText: {
-    marginLeft: 10,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  sectionDescription: {
-    fontSize: 14,
-    color: '#666',
+    width: '100%',
+    paddingVertical: 15,
+    borderTopWidth: 1,
+    borderColor: '#E5E5E5',
+    position: 'absolute',
+    bottom: 0,
+    backgroundColor: 'white',
   },
 });
 
-export default Profile;
+export default ProfileScreen;
