@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "expo-image-picker": "^16.0.6",
-    "react-native-paper": "^5.13.1"
+    "react-native-paper": "^5.13.1",
+    "react-native-swipe-gestures": "^1.0.5"
   }
 }
