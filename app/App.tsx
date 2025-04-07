@@ -1,7 +1,9 @@
+// App.tsx
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import RootNavigator from './navigation/RootNavigator';
 import * as Font from 'expo-font';
+import { AuthProvider } from './context/AuthContext';
+import Navigation from './navigation'; // index.tsx in navigation folder
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -9,8 +11,8 @@ export default function App() {
   useEffect(() => {
     async function loadFonts() {
       await Font.loadAsync({
-        AfacadRegular: require('./assets/fonts/Afacad-Bold.ttf'),
-        AfacadBold: require('./assets/fonts/Afacad-Regular.ttf'),
+        AfacadRegular: require('./assets/fonts/Afacad-Regular.ttf'),
+        AfacadBold: require('./assets/fonts/Afacad-Bold.ttf'),
       });
       setFontsLoaded(true);
     }
@@ -25,7 +27,11 @@ export default function App() {
     );
   }
 
-  return <RootNavigator />;
+  return (
+    <AuthProvider>
+      <Navigation />
+    </AuthProvider>
+  );
 }
 
 const styles = StyleSheet.create({
