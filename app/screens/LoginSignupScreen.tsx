@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation/RootNavigator'; 
+import { RootStackParamList } from '../navigation/index';
 import { LinearGradient } from 'expo-linear-gradient';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;

@@ -3,17 +3,17 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation/navigationTypes';
+import { RootStackParamList } from '../navigation/index';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
 
-const Welcome = () => {
+const WelcomeScreen = () => {
   const navigation = useNavigation<NavigationProp>(); 
 
   return (
     <TouchableOpacity 
       style={styles.fullScreenTouch} 
-      onPress={() => navigation.navigate('LoginSignup')} 
+      // onPress={() => navigation.navigate('LoginSignup')} 
       activeOpacity={1} 
     >
       <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
@@ -55,4 +55,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Welcome;
+export default WelcomeScreen;
