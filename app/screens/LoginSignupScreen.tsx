@@ -4,11 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/index';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useAuth } from '../context/AuthContext'
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;
 
 const LoginSignupScreen = () => {
   const navigation = useNavigation<NavigationProp>(); 
+  const { setUser } = useAuth();
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -16,7 +18,12 @@ const LoginSignupScreen = () => {
 
   const handleAuth = () => {
     if (email === "test123@gmail.com" && password === "123password456") {
-      navigation.navigate("Profile");
+      const user = {
+        id: 'abc123',
+        email: email,
+      };
+      // navigation.navigate("Profile");
+      setUser(user);
     } else {
       Alert.alert("Invalid Credentials", "Please check your email or password.");
     }

@@ -1,20 +1,30 @@
-import React from 'react';
+// screens/WelcomeScreen.tsx
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/index';
+import { useAuth } from '../context/AuthContext';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
 
 const WelcomeScreen = () => {
-  const navigation = useNavigation<NavigationProp>(); 
+  const navigation = useNavigation<NavigationProp>();
+  const { user } = useAuth();
+
+  // 🔄 Auto-redirect if logged in
+  useEffect(() => {
+    if (user) {
+      navigation.replace('Home'); // ✅ avoids back navigation
+    }
+  }, [user]);
 
   return (
-    <TouchableOpacity 
-      style={styles.fullScreenTouch} 
-      // onPress={() => navigation.navigate('LoginSignup')} 
-      activeOpacity={1} 
+    <TouchableOpacity
+      style={styles.fullScreenTouch}
+      onPress={() => navigation.navigate('LoginSignup')}
+      activeOpacity={1}
     >
       <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
         <View style={styles.container}>

@@ -13,7 +13,7 @@ const HomeScreen = () => {
   return (
     <TouchableOpacity 
       style={styles.fullScreenTouch} 
-      onPress={() => navigation.navigate('LoginSignup')} 
+      // onPress={() => navigation.navigate('LoginSignup')} 
       activeOpacity={1} 
     >
       <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
