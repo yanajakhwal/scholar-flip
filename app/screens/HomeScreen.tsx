@@ -1,30 +1,27 @@
 import React from 'react';
+import HeaderDropdown from '../components/HeaderDropdown';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation/index';
-
-type NavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
 const HomeScreen = () => {
-  const navigation = useNavigation<NavigationProp>(); 
-
   return (
     <TouchableOpacity 
       style={styles.fullScreenTouch} 
-      // onPress={() => navigation.navigate('LoginSignup')} 
+      onPress={() => console.log("on the home screeeen")}
       activeOpacity={1} 
     >
       <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
-        <View style={styles.container}>
-          <Text style={styles.title}>home screeeeeeen</Text>
+        <View style={styles.dropdownWrapper}>
+          <HeaderDropdown />
+        </View>
+
+        <View style={styles.centerContent}>
+          <Text style={styles.title}>Home</Text>
         </View>
       </LinearGradient>
     </TouchableOpacity>
   );
 };
-
 
 const styles = StyleSheet.create({
   fullScreenTouch: {
@@ -35,23 +32,22 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  container: {
+  dropdownWrapper: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 10,
+  },
+  centerContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'center',   // center vertically
+    alignItems: 'center',       // center horizontally
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
     color: '#000',
     fontFamily: 'AfacadRegular',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#000',
-    fontFamily: 'AfacadBold',
-    opacity: 0.8,
   },
 });
 
