@@ -1,17 +1,32 @@
-// components/HeaderDropdown.tsx
+// componenys/HeaderDropdown.tsx
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '../context/AuthContext';
+import { RootStackParamList } from '../navigation'; // or '../navigation/navigationTypes'
 
+type NavigationProp = StackNavigationProp<RootStackParamList>;
 const HeaderDropdown = () => {
   const [visible, setVisible] = useState(false);
-  const navigation = useNavigation();
-  const { setUser } = useAuth();
+  const navigation = useNavigation<NavigationProp>();
+  const { setUser, profileComplete } = useAuth();
 
-  const handleNavigate = (screen: string) => {
+  const handleNavigate = (screen: keyof RootStackParamList) => {
     setVisible(false);
-    // @ts-ignore
+
+    if ((screen === 'Swipe' || screen === 'Saved') && !profileComplete) {
+      Alert.alert(
+        'Complete Your Profile',
+        'Please finish setting up your profile before using this feature.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Go to Profile', onPress: () => navigation.navigate('Profile') },
+        ]
+      );
+      return;
+    }
+
     navigation.navigate(screen);
   };
 
@@ -41,11 +56,17 @@ const HeaderDropdown = () => {
             <TouchableOpacity onPress={() => handleNavigate('Home')} style={styles.item}>
               <Text>🏠 Home</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigate('Profile')} style={styles.item}>
-              <Text>👤 Profile</Text>
+            <TouchableOpacity onPress={() => handleNavigate('Swipe')} style={styles.item}>
+              <Text>🎓 Swipe</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleNavigate('Saved')} style={styles.item}>
+              <Text>💾 Saved</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigate('Settings')} style={styles.item}>
               <Text>⚙️ Settings</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleNavigate('Profile')} style={styles.item}>
+              <Text>👤 Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleLogout} style={styles.item}>
               <Text>🚪 Logout</Text>
@@ -60,9 +81,6 @@ const HeaderDropdown = () => {
 const styles = StyleSheet.create({
   icon: {
     padding: 10,
-    position: 'absolute',
-    top: 50,
-    right: 20,
     zIndex: 10,
   },
   iconText: {
@@ -82,7 +100,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     elevation: 4,
-    width: 150,
+    width: 170,
   },
   item: {
     paddingVertical: 10,
