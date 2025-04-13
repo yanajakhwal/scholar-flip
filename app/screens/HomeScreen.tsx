@@ -1,3 +1,4 @@
+// screens/HomeScreen.tsx
 import React from 'react';
 import HeaderDropdown from '../components/HeaderDropdown';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
@@ -5,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const HomeScreen = () => {
   return (
+
     <TouchableOpacity 
       style={styles.fullScreenTouch} 
       onPress={() => console.log("on the home screeeen")}
@@ -12,7 +14,7 @@ const HomeScreen = () => {
     >
       <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
         <View style={styles.dropdownWrapper}>
-          <HeaderDropdown />
+          <HeaderDropdown/>
         </View>
 
         <View style={styles.centerContent}>

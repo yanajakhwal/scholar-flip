@@ -1,4 +1,4 @@
-// componenys/HeaderDropdown.tsx
+// components/HeaderDropdown.tsx
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';

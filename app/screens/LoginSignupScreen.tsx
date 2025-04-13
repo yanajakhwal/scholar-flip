@@ -5,6 +5,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/index';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../context/AuthContext'
+import { auth } from '../context/firebase';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;
 
@@ -16,16 +18,21 @@ const LoginSignupScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleAuth = () => {
-    if (email === "test123@gmail.com" && password === "123password456") {
-      const user = {
-        id: 'abc123',
-        email: email,
-      };
-      // navigation.navigate("Profile");
-      setUser(user);
-    } else {
-      Alert.alert("Invalid Credentials", "Please check your email or password.");
+  const handleAuth = async () => {
+    try {
+      let userCredential;
+  
+      if (isSignUp) {
+        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
+      }
+  
+      const user = userCredential.user;
+  
+      setUser({ id: user.uid, email: user.email ?? '' }); // You could add more fields later
+    } catch (error: any) {
+      Alert.alert("Authentication Error", error.message);
     }
   };
 

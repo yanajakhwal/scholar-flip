@@ -16,7 +16,8 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "isolatedModules": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": [
     "app/**/*",
