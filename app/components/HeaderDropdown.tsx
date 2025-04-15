@@ -4,9 +4,10 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '../context/AuthContext';
-import { RootStackParamList } from '../navigation'; // or '../navigation/navigationTypes'
+import { RootStackParamList } from '../navigation';
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
+
 const HeaderDropdown = () => {
   const [visible, setVisible] = useState(false);
   const navigation = useNavigation<NavigationProp>();
@@ -47,32 +48,32 @@ const HeaderDropdown = () => {
         animationType="fade"
         onRequestClose={() => setVisible(false)}
       >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPressOut={() => setVisible(false)}
-        >
-          <View style={styles.dropdown}>
-            <TouchableOpacity onPress={() => handleNavigate('Home')} style={styles.item}>
-              <Text>🏠 Home</Text>
+        <View style={styles.fullscreenOverlay}>
+          <View style={styles.dropdownLarge}>
+            {[
+              { label: 'Home', screen: 'Home' },
+              { label: 'Swipe', screen: 'Swipe' },
+              { label: 'Saved', screen: 'Saved' },
+              { label: 'Settings', screen: 'Settings' },
+              { label: 'Profile', screen: 'Profile' },
+            ].map((item, idx) => (
+              <TouchableOpacity
+                key={idx}
+                onPress={() => handleNavigate(item.screen as keyof RootStackParamList)}
+                style={styles.largeItem}
+              >
+                <Text style={styles.largeItemText}>{item.label}</Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity onPress={handleLogout} style={styles.largeItem}>
+              <Text style={[styles.largeItemText, styles.logoutText]}>Logout</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigate('Swipe')} style={styles.item}>
-              <Text>🎓 Swipe</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigate('Saved')} style={styles.item}>
-              <Text>💾 Saved</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigate('Settings')} style={styles.item}>
-              <Text>⚙️ Settings</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigate('Profile')} style={styles.item}>
-              <Text>👤 Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleLogout} style={styles.item}>
-              <Text>🚪 Logout</Text>
+
+            <TouchableOpacity onPress={() => setVisible(false)} style={styles.closeButton}>
+              <Text style={styles.closeText}>Close ✕</Text>
             </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
     </View>
   );
@@ -80,32 +81,56 @@ const HeaderDropdown = () => {
 
 const styles = StyleSheet.create({
   icon: {
-    padding: 10,
+    padding: 12,
     zIndex: 10,
   },
   iconText: {
-    fontSize: 24,
+    fontSize: 32,
+    fontWeight: '600',
+    color: '#333',
   },
-  modalOverlay: {
+  fullscreenOverlay: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-end',
-    paddingTop: 60,
-    paddingRight: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  dropdown: {
+  dropdownLarge: {
     backgroundColor: '#fff',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    elevation: 4,
-    width: 170,
+    borderRadius: 20,
+    paddingVertical: 30,
+    paddingHorizontal: 25,
+    width: '90%',
+    maxHeight: '90%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  item: {
-    paddingVertical: 10,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 0.5,
+  largeItem: {
+    paddingVertical: 18,
+    width: '100%',
+    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
+    alignItems: 'center',
+  },
+  largeItemText: {
+    fontSize: 22,
+    fontWeight: '500',
+    color: '#333',
+  },
+  logoutText: {
+    color: '#d9534f',
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    marginTop: 30,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: '#eee',
+    borderRadius: 10,
+  },
+  closeText: {
+    fontSize: 16,
+    color: '#555',
   },
 });
 
