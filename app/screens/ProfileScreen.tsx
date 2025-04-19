@@ -1,18 +1,31 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  StyleSheet, 
-  Image, 
-  TouchableOpacity, 
-  Keyboard, 
-  TouchableWithoutFeedback, 
-  ScrollView 
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Keyboard,
+  TouchableWithoutFeedback,
+  ScrollView,
+  Dimensions
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../navigation'; // or wherever your type is
+
+type KeyboardOption = 'default' | 'email-address' | 'numeric' | 'phone-pad';
+
+type FieldProps = {
+  label: string;
+  placeholder: string;
+  value: string;
+  set: React.Dispatch<React.SetStateAction<string>>;
+  keyboard?: KeyboardOption;
+};
 
 const ProfileScreen = () => {
   const [user, setUser] = useState('');
@@ -20,8 +33,8 @@ const ProfileScreen = () => {
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
-
-  const email = 'test123@gmail.com'; // hardcoded for now
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Profile'>>();
+  const email = 'test123@gmail.com';
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -36,116 +49,106 @@ const ProfileScreen = () => {
     }
   };
 
+  const handleNext = () => {
+    navigation.navigate('ScholarshipInfo'); // You should have this route setup
+  };
+
+  const fields: FieldProps[] = [
+    { label: 'Username', placeholder: 'username', value: user, set: setUser },
+    { label: 'Phone', placeholder: '+1 123-456-7890', value: phone, set: setPhone, keyboard: 'phone-pad' },
+    { label: 'Gender', placeholder: 'gender', value: gender, set: setGender },
+    { label: 'Date of birth', placeholder: '24/12/2005', value: dob, set: setDob, keyboard: 'numeric' }
+  ];
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
-        <ScrollView contentContainerStyle={styles.container}>
-        
-        {/* Profile Picture */}
-        <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
-          {profileImage ? (
-            <Image source={{ uri: profileImage }} style={styles.profileImage} />
-          ) : (
-            <Image source={require('../assets/profile-img.png')} style={styles.profileImage} />
-          )}
-        </TouchableOpacity>
+        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+          <Text style={styles.heading}>Complete Your Profile</Text>
 
-         {/* Fields */}
-         <View style={styles.detailsContainer}>
-            <Text style={styles.label}>Username</Text>
-            <TextInput 
-              style={styles.input} 
-              placeholder="username"
-              value={user}
-              onChangeText={setUser}
-            />
+          {/* Profile Picture */}
+          <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+            {profileImage ? (
+              <Image source={{ uri: profileImage }} style={styles.profileImage} />
+            ) : (
+              <Image source={require('../assets/profile-img.png')} style={styles.profileImage} />
+            )}
+          </TouchableOpacity>
+
+          {/* Info Fields */}
+          <View style={styles.detailsContainer}>
+            {fields.map((field, index) => (
+              <View key={index}>
+                <Text style={styles.label}>{field.label}</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder={field.placeholder}
+                  value={field.value}
+                  onChangeText={field.set}
+                  keyboardType={field.keyboard ?? 'default'}
+                />
+              </View>
+            ))}
 
             <Text style={styles.label}>Email</Text>
             <Text style={styles.value}>{email}</Text>
-
-            <Text style={styles.label}>Phone</Text>
-            <TextInput 
-              style={styles.input} 
-              placeholder="+1 123-456-7890"
-              keyboardType="phone-pad"
-              value={phone}
-              onChangeText={setPhone}
-            />
-
-            <Text style={styles.label}>Gender</Text>
-            <TextInput 
-              style={styles.input} 
-              placeholder="gender"
-              value={gender}
-              onChangeText={setGender}
-            />
-
-            <Text style={styles.label}>Date of birth</Text>
-            <TextInput 
-              style={styles.input} 
-              placeholder="24/12/2005"
-              keyboardType="numeric"
-              value={dob}
-              onChangeText={setDob}
-            />
           </View>
 
-          {/* Save Profile Button */}
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>SAVE INFORMATION</Text>
+          {/* Next Button */}
+          <TouchableOpacity style={styles.button} onPress={handleNext}>
+            <Text style={styles.buttonText}>NEXT ➜</Text>
           </TouchableOpacity>
         </ScrollView>
-
-  
       </LinearGradient>
     </TouchableWithoutFeedback>
   );
 };
 
+const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#FFFFFF',
   },
   container: {
     flexGrow: 1,
-    justifyContent: 'center', // Centers content vertically
-    alignItems: 'center', // Centers content horizontally
-    width: '100%', 
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
     padding: 20,
+    paddingBottom: 60,
   },
-  profileHeader: {
-    fontSize: 18,
+  heading: {
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#4A90E2',
+    color: '#333',
+    marginVertical: 20,
     textTransform: 'uppercase',
-    letterSpacing: 1.5,
-    marginBottom: 20,
+    letterSpacing: 1,
   },
   imageContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
     overflow: 'hidden',
     marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#ccc',
   },
   profileImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 60,
   },
   detailsContainer: {
     backgroundColor: 'white',
     padding: 20,
-    borderRadius: 12,
-    width: '95%', // Increased width for a larger box
-    maxWidth: 500, // Increase max width for larger screens
+    borderRadius: 16,
+    width: width * 0.9,
     shadowColor: '#000',
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 10,
-    elevation: 3,
+    elevation: 4,
   },
   label: {
     fontSize: 14,
@@ -161,41 +164,26 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     paddingVertical: 8,
     fontSize: 16,
-    marginBottom: 10,
     color: '#333',
+    marginBottom: 10,
   },
   button: {
     backgroundColor: '#333',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
-    width: '90%',
-    maxWidth: 400,
-    marginBottom: 30,
-    marginTop: 10,
+    width: width * 0.85,
+    marginTop: 20,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  navbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    width: '100%',
-    paddingVertical: 15,
-    borderTopWidth: 1,
-    borderColor: '#E5E5E5',
-    position: 'absolute',
-    bottom: 0,
-    backgroundColor: 'white',
-  },
+  }
 });
 
 export default ProfileScreen;

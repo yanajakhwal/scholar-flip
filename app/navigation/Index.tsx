@@ -10,11 +10,13 @@ import HomeScreen from '../screens/HomeScreen';
 import SwipeScreen from '../screens/SwipeScreen';
 import SavedScreen from '../screens/SavedScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import ScholarshipInfo from '../screens/ScholarshipInfo'; // adjust path as needed
 
 export type RootStackParamList = {
   Welcome: undefined;
   LoginSignup: undefined;
   Profile: undefined;
+  ScholarshipInfo: undefined;
   Home: undefined;
   Swipe: undefined;
   Saved: undefined;
@@ -44,6 +46,7 @@ export default function RootNavigator() {
             <Stack.Screen name="Saved" component={SavedScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="ScholarshipInfo" component={ScholarshipInfo} options={{ title: 'Scholarship Info' }} />
           </>
         )}
       </Stack.Navigator>
