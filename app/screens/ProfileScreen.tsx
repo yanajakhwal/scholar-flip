@@ -15,7 +15,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation'; // or wherever your type is
+import { RootStackParamList } from '../navigation';
+
+const { width } = Dimensions.get('window');
 
 type KeyboardOption = 'default' | 'email-address' | 'numeric' | 'phone-pad';
 
@@ -50,7 +52,7 @@ const ProfileScreen = () => {
   };
 
   const handleNext = () => {
-    navigation.navigate('ScholarshipInfo'); // You should have this route setup
+    navigation.navigate('ScholarshipInfo');
   };
 
   const fields: FieldProps[] = [
@@ -63,10 +65,8 @@ const ProfileScreen = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <View style={styles.topSection}>
           <Text style={styles.heading}>Complete Your Profile</Text>
-
-          {/* Profile Picture */}
           <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
             {profileImage ? (
               <Image source={{ uri: profileImage }} style={styles.profileImage} />
@@ -74,8 +74,9 @@ const ProfileScreen = () => {
               <Image source={require('../assets/profile-img.png')} style={styles.profileImage} />
             )}
           </TouchableOpacity>
+        </View>
 
-          {/* Info Fields */}
+        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
           <View style={styles.detailsContainer}>
             {fields.map((field, index) => (
               <View key={index}>
@@ -94,7 +95,6 @@ const ProfileScreen = () => {
             <Text style={styles.value}>{email}</Text>
           </View>
 
-          {/* Next Button */}
           <TouchableOpacity style={styles.button} onPress={handleNext}>
             <Text style={styles.buttonText}>NEXT ➜</Text>
           </TouchableOpacity>
@@ -104,26 +104,26 @@ const ProfileScreen = () => {
   );
 };
 
-const { width } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
   background: {
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
-  container: {
-    flexGrow: 1,
-    justifyContent: 'flex-start',
+  topSection: {
     alignItems: 'center',
-    width: '100%',
-    padding: 20,
+    paddingTop: 40,
+    paddingBottom: 20,
+    marginTop: 50,
+  },
+  scrollContent: {
+    alignItems: 'center',
     paddingBottom: 60,
   },
   heading: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
-    marginVertical: 20,
+    marginBottom: 20,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -132,7 +132,6 @@ const styles = StyleSheet.create({
     height: 130,
     borderRadius: 65,
     overflow: 'hidden',
-    marginBottom: 20,
     borderWidth: 2,
     borderColor: '#ccc',
   },
@@ -149,6 +148,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 4,
+    marginTop: 10,
   },
   label: {
     fontSize: 14,
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
-  }
+  },
 });
 
 export default ProfileScreen;
