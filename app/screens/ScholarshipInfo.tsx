@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center', // ✅ Center everything vertically
+    justifyContent: 'center',
     paddingHorizontal: 20,
   },
   heading: {
