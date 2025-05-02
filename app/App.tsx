@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import * as Font from 'expo-font';
 import { AuthProvider } from './context/AuthContext';
-import Navigation from './navigation'; // index.tsx in navigation folder
+import Navigation from './navigation/Index'; // index.tsx in navigation folder
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);

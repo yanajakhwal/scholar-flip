@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation/index';
+import { RootStackParamList } from '../navigation/Index';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Settings'>;
 

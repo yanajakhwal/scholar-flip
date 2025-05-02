@@ -1,10 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import {
-  initializeAuth,
-  getReactNativePersistence,
-} from 'firebase/auth/react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { getAuth } from 'firebase/auth';
 import {
   FIREBASE_API_KEY,
   FIREBASE_AUTH_DOMAIN,
@@ -25,6 +20,5 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+// ✅ This is the cleanest / safest way in Firebase 11+
+export const auth = getAuth(app);

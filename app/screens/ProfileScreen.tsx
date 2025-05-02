@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Keyboard, TouchableWithoutFeedback, Dimensions, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Keyboard,
+  Dimensions,
+  Platform,
+  ScrollView,
+  TouchableWithoutFeedback
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation';
+import { RootStackParamList } from '../navigation/Index';
 import { useProfile } from '../context/ProfileContext';
 import Input from '../components/Input';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -40,6 +51,7 @@ const ProfileScreen = () => {
       aspect: [1, 1],
       quality: 1,
     });
+
     if (!result.canceled && result.assets.length > 0) {
       setProfileImage(result.assets[0].uri);
     }
@@ -55,70 +67,139 @@ const ProfileScreen = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
-        <View style={styles.container}>
-          <Text style={styles.heading}>Complete Your Profile</Text>
+      {/* <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled"> */}
+        <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
+          <View style={styles.container}>
+            <Text style={styles.heading}>Complete Your Profile</Text>
 
-          <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
-            {profileImage ? <Image source={{ uri: profileImage }} style={styles.profileImage} /> : <Image source={require('../assets/profile-img.png')} style={styles.profileImage} />}
-          </TouchableOpacity>
-
-          <View style={styles.form}>
-            <Input label="Username" value={user} onChange={setUser} />
-            <Input label="Phone" value={phone} onChange={setPhone} keyboardType="phone-pad" />
-
-            <Text style={styles.label}>Gender</Text>
-            <RNPickerSelect
-              onValueChange={setGender}
-              value={gender}
-              placeholder={{ label: "Select gender", value: "" }}
-              items={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Non-Binary', value: 'Non-Binary' },
-                { label: 'Other', value: 'Other' },
-              ]}
-              style={{ inputIOS: styles.inputIOS, inputAndroid: styles.inputAndroid }}
-            />
-
-            <Text style={styles.label}>Date of Birth</Text>
-            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
-              <Text>{dob || "Select date"}</Text>
+            <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+              {profileImage ? (
+                <Image source={{ uri: profileImage }} style={styles.profileImage} />
+              ) : (
+                <Image source={require('../assets/profile-img.png')} style={styles.defaultProfileImage} />
+              )}
             </TouchableOpacity>
-            {showDatePicker && (
-              <DateTimePicker
-                mode="date"
-                value={dob ? new Date(dob) : new Date()}
-                display={Platform.OS === "ios" ? "spinner" : "default"}
-                onChange={onDateChange}
-              />
-            )}
-          </View>
 
-          <TouchableOpacity style={styles.button} onPress={handleNext}>
-            <Text style={styles.buttonText}>NEXT ➜</Text>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
+            <View style={styles.form}>
+              <Input label="Username" value={user} onChange={setUser} />
+              <Input label="Phone" value={phone} onChange={setPhone} keyboardType="phone-pad" />
+
+              <Text style={styles.label}>Gender</Text>
+
+              {/* NEED TO FIX WHERE YOU TAP TO SELECT GENDER */}
+              <RNPickerSelect
+                onValueChange={setGender}
+                value={gender}
+                placeholder={{ label: 'Select gender', value: '' }}
+                useNativeAndroidPickerStyle={false}
+                items={[
+                  { label: 'Male', value: 'Male' },
+                  { label: 'Female', value: 'Female' },
+                  { label: 'Non-Binary', value: 'Non-Binary' },
+                  { label: 'Other', value: 'Other' },
+                ]}
+                style={{
+                  inputIOS: styles.inputIOS,
+                  inputAndroid: styles.inputAndroid,
+                  placeholder: {
+                    color: '#999',
+                  }
+                }}
+              />
+
+              <Text style={styles.label}>Date of Birth</Text>
+              <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
+                <Text>{dob || "Select date"}</Text>
+              </TouchableOpacity>
+
+              {showDatePicker && (
+                <DateTimePicker
+                  mode="date"
+                  value={dob ? new Date(dob) : new Date()}
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  onChange={onDateChange}
+                />
+              )}
+            </View>
+
+            <TouchableOpacity style={styles.button} onPress={handleNext}>
+              <Text style={styles.buttonText}>NEXT ➜</Text>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      {/* </ScrollView> */}
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   background: { flex: 1 },
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 },
+  scrollContent: { flexGrow: 1 },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, paddingTop: 40 },
   heading: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-  imageContainer: { width: 130, height: 130, borderRadius: 65, overflow: 'hidden', borderWidth: 2, borderColor: '#ccc', marginBottom: 30 },
-  profileImage: { width: '100%', height: '100%' },
-  form: { width: width * 0.9, backgroundColor: 'white', borderRadius: 16, padding: 20, marginBottom: 30 },
+  imageContainer: {
+    width: 130,
+    height: 130,
+    borderRadius: 100,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: '#ccc',
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  defaultProfileImage: {
+    width: '87%',
+    height: '87%',
+    resizeMode: 'cover',
+  },
+  form: {
+    width: width * 0.9,
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 30,
+  },
   label: { fontSize: 14, fontWeight: '600', color: '#555', marginBottom: 8 },
-  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, backgroundColor: '#f9f9f9' },
-  button: { backgroundColor: '#333', paddingVertical: 14, borderRadius: 8, width: width * 0.85, alignItems: 'center' },
+  pickerTouchable: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    backgroundColor: '#f9f9f9',
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    marginBottom: 20,
+  },
+  pickerText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+    backgroundColor: '#f9f9f9',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#333',
+    paddingVertical: 14,
+    borderRadius: 8,
+    width: width * 0.85,
+    alignItems: 'center',
+  },
   buttonText: { color: 'white', fontWeight: 'bold' },
   inputIOS: {
     fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
@@ -128,8 +209,8 @@ const styles = StyleSheet.create({
   },
   inputAndroid: {
     fontSize: 16,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,

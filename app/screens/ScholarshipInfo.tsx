@@ -41,7 +41,7 @@ const ScholarshipInfo = () => {
           </View>
 
           <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-            <Text style={styles.submitText}>SUBMIT ✅</Text>
+            <Text style={styles.submitText}>SUBMIT</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigation.goBack()}>
