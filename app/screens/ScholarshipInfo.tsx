@@ -1,48 +1,43 @@
+// ScholarshipInfo.tsx
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Keyboard,
-  TouchableWithoutFeedback,
-  Dimensions
-} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useProfile } from '../context/ProfileContext';
+import { ScrollView, TextInput, Text, View, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback, Dimensions, KeyboardTypeOptions } from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 const ScholarshipInfo = () => {
-  const [school, setSchool] = useState('');
-  const [field, setField] = useState('');
-  const [gpa, setGpa] = useState('');
-  const [achievements, setAchievements] = useState('');
   const navigation = useNavigation();
+  const { profile, scholarship, setScholarship } = useProfile();
+
+  const [school, setSchool] = useState(scholarship.school);
+  const [field, setField] = useState(scholarship.field);
+  const [gpa, setGpa] = useState(scholarship.gpa);
+  const [achievements, setAchievements] = useState(scholarship.achievements);
 
   const handleSubmit = () => {
-    // Normally you'd save the data or call an API here
-    console.log({ school, field, gpa, achievements });
-    alert('Information submitted!');
+    setScholarship({ school, field, gpa, achievements });
+
+    console.log('Full submission → ', {
+      profile,
+      scholarship: { school, field, gpa, achievements }
+    });
+
+    alert('Profile and Scholarship Info Submitted!');
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <LinearGradient colors={['#FAD6A5', '#FF9A8B', '#AFC8E8']} style={styles.background}>
+      <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <Text style={styles.heading}>Scholarship Details</Text>
 
           <View style={styles.form}>
-            <InputField label="School / University" value={school} onChangeText={setSchool} />
-            <InputField label="Field of Study" value={field} onChangeText={setField} />
-            <InputField label="GPA / Grade Average" value={gpa} onChangeText={setGpa} keyboardType="numeric" />
-            <InputField
-              label="Awards / Achievements"
-              value={achievements}
-              onChangeText={setAchievements}
-              multiline
-              height={100}
-            />
+            <Input label="School / University" value={school} onChange={setSchool} />
+            <Input label="Field of Study" value={field} onChange={setField} />
+            <Input label="GPA / Grade Average" value={gpa} onChange={setGpa} keyboardType="numeric" />
+            <Input label="Awards / Achievements" value={achievements} onChange={setAchievements} />
           </View>
 
           <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
@@ -58,84 +53,74 @@ const ScholarshipInfo = () => {
   );
 };
 
-const InputField = ({
-  label,
-  value,
-  onChangeText,
-  keyboardType = 'default',
-  multiline = false,
-  height = 50
-}: {
+type InputProps = {
   label: string;
   value: string;
-  onChangeText: (val: string) => void;
-  keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad';
-  multiline?: boolean;
-  height?: number;
-}) => (
-  <View style={{ marginBottom: 15 }}>
+  onChange: (val: string) => void;
+  keyboardType?: KeyboardTypeOptions;
+};
+
+const Input = ({ label, value, onChange, keyboardType }: InputProps) => (
+  <View style={{ width: '100%', marginBottom: 15 }}>
     <Text style={styles.label}>{label}</Text>
     <TextInput
-      style={[styles.input, { height }]}
+      style={styles.input}
       value={value}
-      onChangeText={onChangeText}
+      onChangeText={onChange}
+      placeholder={label}
       keyboardType={keyboardType}
-      multiline={multiline}
     />
   </View>
 );
-
-const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
   },
   container: {
-    padding: 20,
+    flex: 1,
     alignItems: 'center',
-    paddingBottom: 40,
+    justifyContent: 'center', // ✅ Center everything vertically
+    paddingHorizontal: 20,
   },
   heading: {
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 20,
     color: '#333',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
+    marginBottom: 30,
   },
   form: {
+    width: width * 0.9,
     backgroundColor: 'white',
     borderRadius: 16,
     padding: 20,
-    width: width * 0.9,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 4,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
-    marginBottom: 6,
-    textTransform: 'uppercase',
+    color: '#555',
+    marginBottom: 8,
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    fontSize: 16,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     backgroundColor: '#f9f9f9',
+    fontSize: 16,
+  },
+  multilineInput: {
+    height: 100,
+    textAlignVertical: 'top',
   },
   submitBtn: {
     backgroundColor: '#333',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    width: width * 0.85,
+    paddingVertical: 14,
+    paddingHorizontal: 50,
+    borderRadius: 30,
+    marginBottom: 20,
   },
   submitText: {
     color: 'white',
@@ -143,9 +128,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   backText: {
-    color: '#555',
+    color: '#444',
     fontSize: 14,
-    marginTop: 15,
     textDecorationLine: 'underline',
   },
 });

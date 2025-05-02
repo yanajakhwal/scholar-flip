@@ -1,42 +1,26 @@
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Keyboard,
-  TouchableWithoutFeedback,
-  ScrollView,
-  Dimensions
+  View, Text, TextInput, StyleSheet, Image, TouchableOpacity,
+  Keyboard, TouchableWithoutFeedback, Dimensions, TextInputProps, KeyboardTypeOptions
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation';
+import { useProfile } from '../context/ProfileContext';
 
-const { width } = Dimensions.get('window');
-
-type KeyboardOption = 'default' | 'email-address' | 'numeric' | 'phone-pad';
-
-type FieldProps = {
-  label: string;
-  placeholder: string;
-  value: string;
-  set: React.Dispatch<React.SetStateAction<string>>;
-  keyboard?: KeyboardOption;
-};
+const { width, height } = Dimensions.get('window');
 
 const ProfileScreen = () => {
-  const [user, setUser] = useState('');
-  const [phone, setPhone] = useState('');
-  const [gender, setGender] = useState('');
-  const [dob, setDob] = useState('');
-  const [profileImage, setProfileImage] = useState<string | null>(null);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Profile'>>();
-  const email = 'test123@gmail.com';
+  const { profile, setProfile } = useProfile();
+
+  const [user, setUser] = useState(profile.user);
+  const [phone, setPhone] = useState(profile.phone);
+  const [gender, setGender] = useState(profile.gender);
+  const [dob, setDob] = useState(profile.dob);
+  const [profileImage, setProfileImage] = useState<string | null>(profile.profileImage);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -52,21 +36,22 @@ const ProfileScreen = () => {
   };
 
   const handleNext = () => {
+    setProfile({
+      user,
+      phone,
+      gender,
+      dob,
+      profileImage,
+    });
     navigation.navigate('ScholarshipInfo');
   };
 
-  const fields: FieldProps[] = [
-    { label: 'Username', placeholder: 'username', value: user, set: setUser },
-    { label: 'Phone', placeholder: '+1 123-456-7890', value: phone, set: setPhone, keyboard: 'phone-pad' },
-    { label: 'Gender', placeholder: 'gender', value: gender, set: setGender },
-    { label: 'Date of birth', placeholder: '24/12/2005', value: dob, set: setDob, keyboard: 'numeric' }
-  ];
-
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <LinearGradient colors={['#AFC8E8', '#FAD6A5', '#FF9A8B']} style={styles.background}>
-        <View style={styles.topSection}>
+        <View style={styles.container}>
           <Text style={styles.heading}>Complete Your Profile</Text>
+
           <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
             {profileImage ? (
               <Image source={{ uri: profileImage }} style={styles.profileImage} />
@@ -74,58 +59,59 @@ const ProfileScreen = () => {
               <Image source={require('../assets/profile-img.png')} style={styles.profileImage} />
             )}
           </TouchableOpacity>
-        </View>
 
-        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
           <View style={styles.detailsContainer}>
-            {fields.map((field, index) => (
-              <View key={index}>
-                <Text style={styles.label}>{field.label}</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder={field.placeholder}
-                  value={field.value}
-                  onChangeText={field.set}
-                  keyboardType={field.keyboard ?? 'default'}
-                />
-              </View>
-            ))}
-
+            <Input label="Username" value={user} onChange={setUser} />
+            <Input label="Phone" value={phone} onChange={setPhone} keyboardType="phone-pad" />
+            <Input label="Gender" value={gender} onChange={setGender} />
+            <Input label="Date of Birth" value={dob} onChange={setDob} keyboardType="numeric" />
             <Text style={styles.label}>Email</Text>
-            <Text style={styles.value}>{email}</Text>
+            <Text style={styles.value}>{profile.email}</Text>
           </View>
 
           <TouchableOpacity style={styles.button} onPress={handleNext}>
             <Text style={styles.buttonText}>NEXT ➜</Text>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
       </LinearGradient>
     </TouchableWithoutFeedback>
   );
 };
 
+type InputProps = {
+  label: string;
+  value: string;
+  onChange: (val: string) => void;
+  keyboardType?: KeyboardTypeOptions;
+};
+
+const Input = ({ label, value, onChange, keyboardType }: InputProps) => (
+  <View style={{ width: '100%', marginBottom: 15 }}>
+    <Text style={styles.label}>{label}</Text>
+    <TextInput
+      style={styles.input}
+      value={value}
+      onChangeText={onChange}
+      placeholder={label}
+      keyboardType={keyboardType}
+    />
+  </View>
+);
+
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
-  topSection: {
+  container: {
+    flex: 1,
     alignItems: 'center',
-    paddingTop: 40,
-    paddingBottom: 20,
-    marginTop: 50,
-  },
-  scrollContent: {
-    alignItems: 'center',
-    paddingBottom: 60,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 20,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
+    marginBottom: 30,
   },
   imageContainer: {
     width: 130,
@@ -134,42 +120,34 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: '#ccc',
+    marginBottom: 30,
   },
   profileImage: {
     width: '100%',
     height: '100%',
   },
   detailsContainer: {
+    width: width * 0.85,
     backgroundColor: 'white',
-    padding: 20,
     borderRadius: 16,
-    width: width * 0.9,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 4,
-    marginTop: 10,
+    padding: 20,
+    marginBottom: 20,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#999',
-    marginTop: 12,
-    textTransform: 'uppercase',
+    color: '#666',
+    marginBottom: 6,
   },
   value: {
     fontSize: 16,
-    fontWeight: 'bold',
     color: '#333',
-    marginBottom: 10,
   },
   input: {
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     paddingVertical: 8,
     fontSize: 16,
-    color: '#333',
-    marginBottom: 10,
   },
   button: {
     backgroundColor: '#333',
@@ -177,11 +155,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     width: width * 0.85,
-    marginTop: 20,
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
     fontWeight: 'bold',
   },
 });
